@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import * as bootstrap from 'bootstrap';
 import { Subscription, timer } from 'rxjs';
 import { SpeechService } from './speech/services/speech.service';
 
@@ -18,6 +19,9 @@ export class AppComponent {
 
   palabra: string = '';
 
+  testIniciado = false;
+
+  myModal: bootstrap.Modal | undefined;
 
   timer: any;
   timerSubscription: any = new Subscription();
@@ -41,42 +45,49 @@ export class AppComponent {
   }
 
   comenzarTest() {
+    if (!this.testIniciado) {
+      this.testIniciado = true;
 
-    this.speechService.setVoices(speechSynthesis.getVoices().filter((voice) => voice.lang.includes('es')));
+      this.speechService.setVoices(speechSynthesis.getVoices().filter((voice) => voice.lang.includes('es')));
 
-    this.speechService.updateVoice('Spanish (Latin America)+Jacky');
+      this.speechService.updateVoice('Spanish (Latin America)+Jacky');
 
-    this.speechService.updateSpeech({ name: 'rate', value: '1' });
+      this.speechService.updateSpeech({ name: 'rate', value: '1' });
 
-    this.speechService.updateSpeech({ name: 'pitch', value: '1' });
+      this.speechService.updateSpeech({ name: 'pitch', value: '1' });
 
-    this.palabras = this.mapPalabras.get(this.indiceLista);
-
-    this.speechService.updateSpeech({ name: 'text', value: this.palabra });
-
-    this.timerSubscription.add((startOver: boolean | undefined) => this.speechService.toggle(startOver));
-
-    this.timer = timer(3000, this.intervaloRecarga);
-    this.timerSubscription = this.timer.subscribe((t: any) => {
-      this.palabra = this.recuperarPalabra(t);
+      this.palabras = this.mapPalabras.get(this.indiceLista);
 
       this.speechService.updateSpeech({ name: 'text', value: this.palabra });
 
+      this.timerSubscription.add((startOver: boolean | undefined) => this.speechService.toggle(startOver));
 
-    });
+      const element = document.getElementById('exampleModalCenter') as HTMLElement;
+      this.myModal = new bootstrap.Modal(element);
+      this.myModal.show();
+
+      this.timer = timer(3000, this.intervaloRecarga * 1000);
+      this.timerSubscription = this.timer.subscribe((t: any) => {
+        this.palabra = this.recuperarPalabra(t);
+
+        if (this.testIniciado) {
+          this.speechService.updateSpeech({ name: 'text', value: this.palabra });
+        }
+
+      });
+    }
   }
 
   recuperarPalabra(t: any): string {
     if (t < 10) {
       if (this.palabras != undefined) {
         return this.palabras[t];
-      } else {
-        return '';
       }
-
     }
     this.timerSubscription.unsubscribe();
-    return 'FIN!';
+    this.testIniciado = false;
+    this.myModal?.hide();
+    return '';
 
   }
 

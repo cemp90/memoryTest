@@ -12,7 +12,7 @@
 </svg>
 
 <div class="col-lg-8 mx-auto p-4 py-md-5">
-  <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+  <header class="d-flex align-items-center pb-3 mb-3 border-bottom">
     <a href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
       <svg class="bi me-2" width="40" height="32">
         <use xlink:href="#bootstrap" />
@@ -22,9 +22,8 @@
   </header>
 
   <main>
-    <h1 class="text-body-emphasis">Parametros de entrada</h1>
-    <p class="fs-5 col-md-8">Para poder ejecutar el test, primero es necesario indicar la lista de palabras que se
-      quiere utilizar y el intervalo de tiempo que habra entre cada palabra, este se debe indicar en milisegundos.</p>
+    <p class="fs-5 col-12 mb-5">Para poder ejecutar el test, primero es necesario indicar la lista de palabras que se
+      quiere utilizar y el intervalo de tiempo que habrá entre cada palabra, este se debe indicar en segundos.</p>
 
     <form>
       <div class="form-group">
@@ -32,29 +31,34 @@
         <select class="form-control" id="exampleFormControlSelect1" [(ngModel)]="indiceLista"
           [ngModelOptions]="{standalone: true}">
           ">
-          <option value="Choose your department" disabled>
-            Choose your department
+          <option value="Elige la lista de palabras" disabled>
+            Elige la lista de palabras
           </option>
           <option *ngFor="let opcion of recuperarOpcionesListas()" value="{{opcion}}">
-            {{ opcion }}
+            Lista {{ opcion }}
         </select>
       </div>
       <div class="form-group">
-        <label for="exampleInputEmail1">intervalo entre palabras</label>
+        <label for="exampleInputEmail1">Intervalo entre palabras (seg)</label>
         <input type="number" class="form-control" id="exampleInputEmail1" [(ngModel)]="intervaloRecarga"
-          [ngModelOptions]="{standalone: true}" aria-describedby="emailHelp" placeholder="Enter email">
+          [ngModelOptions]="{standalone: true}" aria-describedby="emailHelp" placeholder="Introduce segundos">
       </div>
-      <button type="button" class="btn btn-primary" (click)="comenzarTest()">Submit</button>
+      <button type="button" class="btn btn-primary mt-3" [disabled]="testIniciado || !indiceLista || !intervaloRecarga ? true : undefined"
+      (click)="comenzarTest()" data-toggle="modal" data-target="#exampleModalCenter">Empezar</button>
     </form>
-    <hr class="col-12">
-    <div class="d-flex justify-content-center">
-      <div class="col-12 col-md-6">
-        <div class="border rounded shadow-sm">
+  </main>
+</div>
 
-          <h1 class="display-4 font-italic p-3">{{palabra}}</h1>
-
-        </div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"  data-bs-backdrop="static" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Memoriza</h5>
+      </div>
+      <div class="modal-body">
+        <h1 class="display-4 font-italic p-3">{{palabra}}</h1>
       </div>
     </div>
-  </main>
+  </div>
 </div>
