@@ -271,7 +271,7 @@ export class AppComponent {
   }
 
   recuperarPalabra(t: any): string {
-    if (t < 10) {
+    if (t < 20) {
       if (this.palabras != undefined) {
         return this.palabras[t];
       }
